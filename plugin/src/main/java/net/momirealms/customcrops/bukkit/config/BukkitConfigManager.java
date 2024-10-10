@@ -130,6 +130,7 @@ public class BukkitConfigManager extends ConfigManager {
         greenhouse = new HashSet<>(ListUtils.toList(config.get("mechanics.greenhouse.id")));
         greenhouseExistenceForm = CustomForm.valueOf(config.getString("mechanics.greenhouse.type", "BLOCK")).existenceForm();
         greenhouseRange = config.getInt("mechanics.greenhouse.range", 5);
+        vanillaGlassBlocksForGreenhouse = config.getBoolean("mechanics.greenhouse.vanilla-glass-blocks-for-greenhouse", false);
 
         syncSeasons = config.getBoolean("mechanics.sync-season.enable", false);
         referenceWorld = config.getString("mechanics.sync-season.reference", "world");

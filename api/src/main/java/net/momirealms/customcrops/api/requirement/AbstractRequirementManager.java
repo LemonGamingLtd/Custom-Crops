@@ -17,6 +17,7 @@
 
 package net.momirealms.customcrops.api.requirement;
 
+import com.destroystokyo.paper.MaterialTags;
 import dev.dejvokep.boostedyaml.block.implementation.Section;
 import net.momirealms.customcrops.api.BukkitCustomCropsPlugin;
 import net.momirealms.customcrops.api.action.Action;
@@ -438,6 +439,15 @@ public abstract class AbstractRequirementManager<T> implements RequirementManage
                     return true;
                 }
                 if (ConfigManager.enableGreenhouse()) {
+                    if (ConfigManager.vanillaGlassBlocksForGreenhouse()) {
+                        Block block = location.getBlock();
+                        for (int i = 1, range = ConfigManager.greenhouseRange(); i <= range; i++) {
+                            block = block.getRelative(0, i, 0);
+                            if (MaterialTags.GLASS.isTagged(block)) {
+                                return true;
+                            }
+                        }
+                    }
                     Pos3 pos3 = Pos3.from(location);
                     Optional<CustomCropsWorld<?>> world = plugin.getWorldManager().getWorld(location.getWorld());
                     if (world.isPresent()) {
@@ -463,6 +473,16 @@ public abstract class AbstractRequirementManager<T> implements RequirementManage
                 Season season = plugin.getWorldManager().getSeason(location.getWorld());
                 if (seasons.contains(season.name())) {
                     if (ConfigManager.enableGreenhouse()) {
+                        if (ConfigManager.vanillaGlassBlocksForGreenhouse()) {
+                            Block block = location.getBlock();
+                            for (int i = 1, range = ConfigManager.greenhouseRange(); i <= range; i++) {
+                                block = block.getRelative(0, i, 0);
+                                if (MaterialTags.GLASS.isTagged(block)) {
+                                    if (runActions) ActionManager.trigger(context, actions);
+                                    return false;
+                                }
+                            }
+                        }
                         Pos3 pos3 = Pos3.from(location);
                         Optional<CustomCropsWorld<?>> world = plugin.getWorldManager().getWorld(location.getWorld());
                         if (world.isPresent()) {

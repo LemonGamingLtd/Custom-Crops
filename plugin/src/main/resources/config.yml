@@ -110,6 +110,8 @@ mechanics:
     id: '{0}greenhouse_glass'
     type: BLOCK
     range: 5
+    # Enable this to use vanilla glass blocks as greenhouse
+    vanilla-glass-blocks-for-greenhouse: false
   # Synchronize seasons with another world
   sync-season:
     enable: false

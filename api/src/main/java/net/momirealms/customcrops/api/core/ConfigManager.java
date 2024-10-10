@@ -77,6 +77,7 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean enableGreenhouse;
     protected ExistenceForm greenhouseExistenceForm;
     protected int greenhouseRange;
+    protected boolean vanillaGlassBlocksForGreenhouse;
 
     protected boolean syncSeasons;
     protected String referenceWorld;
@@ -125,6 +126,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static int greenhouseRange() {
         return instance.greenhouseRange;
+    }
+
+    public static boolean vanillaGlassBlocksForGreenhouse() {
+        return instance.vanillaGlassBlocksForGreenhouse;
     }
 
     public static int scarecrowRange() {
