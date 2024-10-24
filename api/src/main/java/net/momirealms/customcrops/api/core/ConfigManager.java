@@ -95,6 +95,8 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
     protected boolean worldeditSupport = false;
     protected boolean interveneAntiGrief = false;
 
+    protected boolean asyncWorldSaving = true;
+
     public ConfigManager(BukkitCustomCropsPlugin plugin) {
         this.plugin = plugin;
         instance = this;
@@ -170,6 +172,10 @@ public abstract class ConfigManager implements ConfigLoader, Reloadable {
 
     public static boolean doubleCheck() {
         return instance.doubleCheck;
+    }
+
+    public static boolean asyncWorldSaving() {
+        return instance.asyncWorldSaving;
     }
 
     public static Set<String> scarecrow() {
