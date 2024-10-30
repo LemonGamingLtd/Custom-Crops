@@ -44,9 +44,13 @@ import net.momirealms.customcrops.api.util.PlayerUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -398,7 +402,9 @@ public class CropBlock extends AbstractCustomCropsBlock {
             CropStageConfig nextStage = config.stageWithModelByPoint(afterPoints);
 
             plugin.getScheduler().sync().run(() -> {
-                if (currentStage == nextStage) return;
+                if (currentStage == nextStage) {
+                    return;
+                }
                 FurnitureRotation rotation = plugin.getItemManager().remove(bukkitLocation, ExistenceForm.ANY);
                 if (rotation == FurnitureRotation.NONE && config.rotation()) {
                     rotation = FurnitureRotation.random();
@@ -421,6 +427,7 @@ public class CropBlock extends AbstractCustomCropsBlock {
                     if (!config.stageIDs().contains(blockID)) {
                         plugin.getPluginLogger().warn("Crop[" + config.id() + "] is removed at location[" + world.worldName() + "," + location + "] because the id of the block is [" + blockID + "]");
                         world.removeBlockState(location);
+                        plugin.getItemManager().remove(bukkitLocation, ExistenceForm.ANY);
                         return;
                     }
                 } else {
