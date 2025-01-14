@@ -18,6 +18,7 @@
 package net.momirealms.customcrops.bukkit.integration.adaptor.asp_r1;
 
 import com.flowpowered.nbt.*;
+import com.infernalsuite.aswm.api.events.LoadSlimeWorldEvent;
 import com.infernalsuite.aswm.api.world.SlimeWorld;
 import net.momirealms.customcrops.api.BukkitCustomCropsPlugin;
 import net.momirealms.customcrops.api.core.InternalRegistries;
@@ -29,6 +30,9 @@ import net.momirealms.customcrops.api.util.TagUtils;
 import net.momirealms.customcrops.common.helper.GsonHelper;
 import net.momirealms.customcrops.common.util.Key;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.function.Function;
 
-public class SlimeWorldAdaptorR1 extends AbstractWorldAdaptor<SlimeWorld> {
+public class SlimeWorldAdaptorR1 extends AbstractWorldAdaptor<SlimeWorld> implements Listener {
 
     private final Function<String, SlimeWorld> getSlimeWorldFunction;
 
@@ -74,6 +78,13 @@ public class SlimeWorldAdaptorR1 extends AbstractWorldAdaptor<SlimeWorld> {
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @EventHandler
+    public void onWorldLoad(LoadSlimeWorldEvent event) {
+        World world = Bukkit.getWorld(event.getSlimeWorld().getName());
+        if (!BukkitCustomCropsPlugin.getInstance().getWorldManager().isMechanicEnabled(world)) return;
+        BukkitCustomCropsPlugin.getInstance().getWorldManager().loadWorld(world);
     }
 
     @Override

@@ -12,7 +12,7 @@
 
 CustomCrops is a Paper plugin crafted to deliver an exceptional planting experience for Minecraft servers, with a strong emphasis on customization and performance. It employs Zstd compression for data serialization, ensuring high efficiency comparable to Minecraft's own serialization techniques. The plugin optimizes server performance by running its tick system across multiple threads, reverting to the main thread only when required. Additionally, CustomCrops offers a comprehensive API that enables developers to create custom block mechanism with specific interaction and tick behaviors, such as a fish trap block that periodically provides players with fish.
 
-## How to build
+## How to Build
 
 #### Command Line
 Install JDK 17 & 21. \
@@ -23,10 +23,24 @@ Execute ".\gradlew build" and get the artifact under /target folder
 Import the project and execute gradle build action. \
 Get the artifact under /target folder
 
-## Support the developer
+## How to Contribute
 
-Polymart: https://polymart.org/resource/customcrops.2625 \
-Afdian: https://afdian.com/@xiaomomi
+#### Translations
+Clone this project and create a new language file in the /common/src/main/resources/translations directory. \
+Once your changes are ready, open a pull request for review. We appreciate your works!
+
+#### Areas for improvement
+[1] Further improve the thread scheduler and reduce the use of ConcurrentHashMap. \
+[2] Optimize the map storage in the section as a palette. \
+[3] Use other NBT libraries (such as sparrow-nbt) to replace the current sponge flow-nbt (because this library is really a bit bad).
+I used it for compatibility with AdvancedSlimePaper in the beginning. In fact, we can use the same IO stream operation to convert sparrow-nbt to flow-nbt and store it in the Slime world. \
+[4] Improve the region file format and use file headers and sectors to perform random read and write of region files. (4.0 milestone)
+
+## Support the Developer
+
+Polymart: https://polymart.org/resource/customcrops.2625/ \
+BuiltByBit: https://builtbybit.com/resources/customcrops.36363/ \
+Afdian: https://afdian.com/@xiaomomi/
 
 ## CustomCrops API
 
@@ -74,5 +88,5 @@ dependencies {
     compileOnly("com.github.Xiao-MoMi:Custom-Crops:{LATEST}")
 }
 ```
-#### Fun facts
+#### Fun Facts
 I misspelled mechanism as mechanic. I should have realized this earlier XD

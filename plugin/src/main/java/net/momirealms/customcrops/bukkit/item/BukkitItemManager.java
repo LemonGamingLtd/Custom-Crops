@@ -78,7 +78,7 @@ public class BukkitItemManager extends AbstractItemManager {
             plugin.getPluginLogger().warn("Failed to load CustomItemProvider", e);
         }
         if (this.provider == null) {
-            plugin.getPluginLogger().warn("ItemsAdder/Oraxen are not installed, which can cause problems unless you use the CustomCrops API.");
+            plugin.getPluginLogger().warn("ItemsAdder/Oraxen/Nexo/MythicCrucible are not installed. You can safely ignore this if you implemented the custom item interface with API.");
         }
         this.factory = BukkitItemFactory.create(plugin);
     }
@@ -157,6 +157,19 @@ public class BukkitItemManager extends AbstractItemManager {
             this.setCustomEventListener((AbstractCustomEventListener) oraxenListenerConstructor.newInstance(this));
 
             plugin.getPluginLogger().info("Oraxen hooked!");
+        } else if (PluginUtils.isEnabled("Nexo")) {
+            String rVersion = "r1";
+            Class<?> nexoProviderClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.nexo_" + rVersion + ".NexoProvider");
+            Constructor<?> nexoProviderConstructor = nexoProviderClass.getDeclaredConstructor();
+            nexoProviderConstructor.setAccessible(true);
+            this.provider = (CustomItemProvider) nexoProviderConstructor.newInstance();
+
+            Class<?> nexoListenerClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.nexo_" + rVersion + ".NexoListener");
+            Constructor<?> nexoListenerConstructor = nexoListenerClass.getDeclaredConstructor(AbstractItemManager.class);
+            nexoListenerConstructor.setAccessible(true);
+            this.setCustomEventListener((AbstractCustomEventListener) nexoListenerConstructor.newInstance(this));
+
+            plugin.getPluginLogger().info("Nexo hooked!");
         } else if (PluginUtils.isEnabled("ItemsAdder")) {
             String rVersion = "r1";
             Class<?> itemsAdderProviderClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.itemsadder_" + rVersion + ".ItemsAdderProvider");
@@ -246,7 +259,7 @@ public class BukkitItemManager extends AbstractItemManager {
     @NotNull
     @Override
     public FurnitureRotation removeFurniture(@NotNull Location location) {
-        Collection<Entity> entities = location.getWorld().getNearbyEntities(LocationUtils.toSurfaceCenterLocation(location), 0.5,0.25,0.5);
+        Collection<Entity> entities = location.getWorld().getNearbyEntities(LocationUtils.toSurfaceCenterLocation(location), 0.5,0.51,0.5);
         FurnitureRotation rotation = null;
         for (Entity entity : entities) {
             if (this.provider.removeFurniture(entity) && rotation == null) {
@@ -289,7 +302,7 @@ public class BukkitItemManager extends AbstractItemManager {
     @Override
     @Nullable
     public String furnitureID(Location location) {
-        Collection<Entity> entities = location.getWorld().getNearbyEntities(LocationUtils.toSurfaceCenterLocation(location), 0.5,0.25,0.5);
+        Collection<Entity> entities = location.getWorld().getNearbyEntities(LocationUtils.toSurfaceCenterLocation(location), 0.5,0.51,0.5);
         for (Entity entity : entities) {
             if (provider.isFurniture(entity)) {
                 return provider.furnitureID(entity);
@@ -348,12 +361,17 @@ public class BukkitItemManager extends AbstractItemManager {
             try {
                 return new ItemStack(Material.valueOf(id.toUpperCase(Locale.ENGLISH)));
             } catch (IllegalArgumentException e) {
-                Material material = Registry.MATERIAL.get(new NamespacedKey("minecraft", id.toLowerCase(Locale.ENGLISH)));
-                if (material != null) {
-                    return new ItemStack(material);
+                try {
+                    Material material = Registry.MATERIAL.get(new NamespacedKey("minecraft", id.toLowerCase(Locale.ENGLISH)));
+                    if (material != null) {
+                        return new ItemStack(material);
+                    }
+                    plugin.getPluginLogger().warn("Item " + id + " not exists", e);
+                    return new ItemStack(Material.PAPER);
+                } catch (IllegalArgumentException exception) {
+                    plugin.getPluginLogger().warn("Illegal item " + id, exception);
+                    return new ItemStack(Material.PAPER);
                 }
-                plugin.getPluginLogger().warn("Item " + id + " not exists", e);
-                return new ItemStack(Material.PAPER);
             }
         } else {
             String[] split = id.split(":", 2);

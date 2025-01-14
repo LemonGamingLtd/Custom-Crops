@@ -44,13 +44,9 @@ import net.momirealms.customcrops.api.util.PlayerUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Interaction;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -118,14 +114,16 @@ public class CropBlock extends AbstractCustomCropsBlock {
 
         context.updateLocation(location);
 
-        // check requirements
-        if (!RequirementManager.isSatisfied(context, cropConfig.breakRequirements())) {
-            event.setCancelled(true);
-            return;
-        }
-        if (!RequirementManager.isSatisfied(context, stageConfig.breakRequirements())) {
-            event.setCancelled(true);
-            return;
+        // check requirements only if it's triggered by direct events
+        if (event.reason() == BreakReason.BREAK) {
+            if (!RequirementManager.isSatisfied(context, cropConfig.breakRequirements())) {
+                event.setCancelled(true);
+                return;
+            }
+            if (!RequirementManager.isSatisfied(context, stageConfig.breakRequirements())) {
+                event.setCancelled(true);
+                return;
+            }
         }
 
         CropBreakEvent breakEvent = new CropBreakEvent(event.entityBreaker(), event.blockBreaker(), cropConfig, event.brokenID(), event.location(),
@@ -268,19 +266,26 @@ public class CropBlock extends AbstractCustomCropsBlock {
                     CropStageConfig nextStage = cropConfig.stageWithModelByPoint(afterPoints);
 
                     Context<CustomCropsBlockState> blockContext = Context.block(state, location);
+                    if (Objects.equals(nextStage.stageID(), event.relatedID())) {
+                        for (int i = point + 1; i <= afterPoints; i++) {
+                            CropStageConfig stage = cropConfig.stageByPoint(i);
+                            if (stage != null) {
+                                ActionManager.trigger(blockContext, stage.growActions());
+                            }
+                        }
+                        return;
+                    }
+                    FurnitureRotation rotation = BukkitCustomCropsPlugin.getInstance().getItemManager().remove(location, ExistenceForm.ANY);
+                    if (rotation == FurnitureRotation.NONE && cropConfig.rotation()) {
+                        rotation = FurnitureRotation.random();
+                    }
+                    BukkitCustomCropsPlugin.getInstance().getItemManager().place(location, nextStage.existenceForm(), Objects.requireNonNull(nextStage.stageID()), rotation);
                     for (int i = point + 1; i <= afterPoints; i++) {
                         CropStageConfig stage = cropConfig.stageByPoint(i);
                         if (stage != null) {
                             ActionManager.trigger(blockContext, stage.growActions());
                         }
                     }
-
-                    if (Objects.equals(nextStage.stageID(), event.relatedID())) return;
-                    FurnitureRotation rotation = BukkitCustomCropsPlugin.getInstance().getItemManager().remove(location, ExistenceForm.ANY);
-                    if (rotation == FurnitureRotation.NONE && cropConfig.rotation()) {
-                        rotation = FurnitureRotation.random();
-                    }
-                    BukkitCustomCropsPlugin.getInstance().getItemManager().place(location, nextStage.existenceForm(), Objects.requireNonNull(nextStage.stageID()), rotation);
                     return;
                 }
             }
@@ -403,6 +408,12 @@ public class CropBlock extends AbstractCustomCropsBlock {
 
             plugin.getScheduler().sync().run(() -> {
                 if (currentStage == nextStage) {
+                    for (int i = previousPoint + 1; i <= afterPoints; i++) {
+                        CropStageConfig stage = config.stageByPoint(i);
+                        if (stage != null) {
+                            ActionManager.trigger(context, stage.growActions());
+                        }
+                    }
                     return;
                 }
                 FurnitureRotation rotation = plugin.getItemManager().remove(bukkitLocation, ExistenceForm.ANY);
@@ -427,7 +438,6 @@ public class CropBlock extends AbstractCustomCropsBlock {
                     if (!config.stageIDs().contains(blockID)) {
                         plugin.getPluginLogger().warn("Crop[" + config.id() + "] is removed at location[" + world.worldName() + "," + location + "] because the id of the block is [" + blockID + "]");
                         world.removeBlockState(location);
-                        plugin.getItemManager().remove(bukkitLocation, ExistenceForm.ANY);
                         return;
                     }
                 } else {
