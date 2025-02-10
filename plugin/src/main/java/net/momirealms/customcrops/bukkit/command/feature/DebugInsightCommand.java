@@ -138,57 +138,59 @@ public class DebugInsightCommand extends BukkitCommandFeature<CommandSender> imp
             if (optionWorld.isEmpty()) {
                 return;
             }
-            CustomCropsWorld<?> customCropsWorld = optionWorld.get();
 
-            Chunk chunk = player.getLocation().getChunk();
-            ChunkPos chunkPos = ChunkPos.fromBukkitChunk(chunk);
-            if (!chunkPos.equals(currentPos)) {
-                currentPos = chunkPos;
-                HashSet<ChunkPos> nearbyChunks = new HashSet<>();
-                for (int i = -2; i < 3; i++) {
-                    for (int j = -2; j < 3; j++) {
-                        nearbyChunks.add(ChunkPos.of(currentPos.x() + i, currentPos.z() + j));
+            CustomCropsWorld<?> customCropsWorld = optionWorld.get();
+            BukkitCustomCropsPlugin.getInstance().getScheduler().executeSync(() -> {
+                Chunk chunk = player.getLocation().getChunk();
+                ChunkPos chunkPos = ChunkPos.fromBukkitChunk(chunk);
+                if (!chunkPos.equals(currentPos)) {
+                    currentPos = chunkPos;
+                    HashSet<ChunkPos> nearbyChunks = new HashSet<>();
+                    for (int i = -2; i < 3; i++) {
+                        for (int j = -2; j < 3; j++) {
+                            nearbyChunks.add(ChunkPos.of(currentPos.x() + i, currentPos.z() + j));
+                        }
                     }
-                }
-                ArrayList<ChunkPos> chunksToRemove = new ArrayList<>();
-                for (Map.Entry<ChunkPos, HighlightBlocks[]> entry : highlightCache.entrySet()) {
-                    if (!nearbyChunks.contains(entry.getKey())) {
-                        chunksToRemove.add(entry.getKey());
+                    ArrayList<ChunkPos> chunksToRemove = new ArrayList<>();
+                    for (Map.Entry<ChunkPos, HighlightBlocks[]> entry : highlightCache.entrySet()) {
+                        if (!nearbyChunks.contains(entry.getKey())) {
+                            chunksToRemove.add(entry.getKey());
+                        }
                     }
-                }
-                for (ChunkPos pos : chunksToRemove) {
-                    HighlightBlocks[] blocks = highlightCache.remove(pos);
-                    if (blocks != null) {
-                        for (HighlightBlocks block : blocks) {
-                            block.destroy(player);
+                    for (ChunkPos pos : chunksToRemove) {
+                        HighlightBlocks[] blocks = highlightCache.remove(pos);
+                        if (blocks != null) {
+                            for (HighlightBlocks block : blocks) {
+                                block.destroy(player);
+                            }
+                        }
+                    }
+                    for (ChunkPos pos : nearbyChunks) {
+                        if (!highlightCache.containsKey(pos)) {
+                            customCropsWorld.getChunk(pos).ifPresentOrElse(cropsChunk -> {
+                                ArrayList<HighlightBlocks> highlightBlockList = new ArrayList<>();
+                                HashMap<net.momirealms.customcrops.api.misc.NamedTextColor, List<Location>> blockMap = new HashMap<>();
+                                for (CustomCropsSection section : cropsChunk.sections()) {
+                                    for (Map.Entry<BlockPos, CustomCropsBlockState> entry : section.blockMap().entrySet()) {
+                                        net.momirealms.customcrops.api.misc.NamedTextColor namedTextColor = entry.getValue().type().insightColor();
+                                        Location location = LocationUtils.toSurfaceCenterLocation(entry.getKey().toPos3(pos).toLocation(world));
+                                        List<Location> locations = blockMap.computeIfAbsent(namedTextColor, k -> new ArrayList<>());
+                                        locations.add(location);
+                                    }
+                                }
+                                for (Map.Entry<net.momirealms.customcrops.api.misc.NamedTextColor, List<Location>> entry : blockMap.entrySet()) {
+                                    highlightBlockList.add(SparrowHeart.getInstance().highlightBlocks(
+                                        player, NamedTextColor.namedColor(entry.getKey().getValue()), entry.getValue().toArray(new Location[0])
+                                    ));
+                                }
+                                highlightCache.put(pos, highlightBlockList.toArray(new HighlightBlocks[0]));
+                            }, () -> {
+                                highlightCache.put(pos, new HighlightBlocks[0]);
+                            });
                         }
                     }
                 }
-                for (ChunkPos pos : nearbyChunks) {
-                    if (!highlightCache.containsKey(pos)) {
-                        customCropsWorld.getChunk(pos).ifPresentOrElse(cropsChunk -> {
-                            ArrayList<HighlightBlocks> highlightBlockList = new ArrayList<>();
-                            HashMap<net.momirealms.customcrops.api.misc.NamedTextColor, List<Location>> blockMap = new HashMap<>();
-                            for (CustomCropsSection section : cropsChunk.sections()) {
-                                for (Map.Entry<BlockPos, CustomCropsBlockState> entry : section.blockMap().entrySet()) {
-                                    net.momirealms.customcrops.api.misc.NamedTextColor namedTextColor = entry.getValue().type().insightColor();
-                                    Location location = LocationUtils.toSurfaceCenterLocation(entry.getKey().toPos3(pos).toLocation(world));
-                                    List<Location> locations = blockMap.computeIfAbsent(namedTextColor, k -> new ArrayList<>());
-                                    locations.add(location);
-                                }
-                            }
-                            for (Map.Entry<net.momirealms.customcrops.api.misc.NamedTextColor, List<Location>> entry : blockMap.entrySet()) {
-                                highlightBlockList.add(SparrowHeart.getInstance().highlightBlocks(
-                                        player, NamedTextColor.namedColor(entry.getKey().getValue()), entry.getValue().toArray(new Location[0])
-                                ));
-                            }
-                            highlightCache.put(pos, highlightBlockList.toArray(new HighlightBlocks[0]));
-                        }, () -> {
-                            highlightCache.put(pos, new HighlightBlocks[0]);
-                        });
-                    }
-                }
-            }
+            }, player.getLocation());
         }
     }
 }
