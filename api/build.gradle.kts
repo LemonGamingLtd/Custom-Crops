@@ -9,6 +9,7 @@ repositories {
     maven("https://repo.rapture.pw/repository/maven-releases/") // flow nbt
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    maven("https://repo.momirealms.net/releases/")
 }
 
 dependencies {
@@ -23,7 +24,7 @@ dependencies {
     compileOnly("net.kyori:adventure-text-serializer-gson:${rootProject.properties["adventure_bundle_version"]}")
     compileOnly("dev.folia:folia-api:${rootProject.properties["paper_version"]}-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:${rootProject.properties["placeholder_api_version"]}")
-    compileOnly("com.github.Xiao-MoMi:Sparrow-Heart:${rootProject.properties["sparrow_heart_version"]}")
+    compileOnly("net.momirealms:sparrow-heart:${rootProject.properties["sparrow_heart_version"]}")
     compileOnly("org.incendo:cloud-core:${rootProject.properties["cloud_core_version"]}")
     compileOnly("org.incendo:cloud-minecraft-extras:${rootProject.properties["cloud_minecraft_extras_version"]}")
     compileOnly("org.jetbrains:annotations:${rootProject.properties["jetbrains_annotations_version"]}")
@@ -34,6 +35,7 @@ dependencies {
     compileOnly("com.saicone.rtag:rtag:${rootProject.properties["rtag_version"]}")
     compileOnly("net.objecthunter:exp4j:${rootProject.properties["exp4j_version"]}")
     compileOnly("com.google.guava:guava:${rootProject.properties["guava_version"]}")
+    compileOnly("io.netty:netty-all:${rootProject.properties["netty_version"]}.Final")
 }
 
 java {
