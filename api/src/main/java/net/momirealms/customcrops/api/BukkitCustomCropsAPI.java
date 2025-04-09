@@ -25,6 +25,7 @@ import net.momirealms.customcrops.api.core.FurnitureRotation;
 import net.momirealms.customcrops.api.core.Registries;
 import net.momirealms.customcrops.api.core.block.BreakReason;
 import net.momirealms.customcrops.api.core.block.CropBlock;
+import net.momirealms.customcrops.api.core.block.PotBlock;
 import net.momirealms.customcrops.api.core.mechanic.crop.CropConfig;
 import net.momirealms.customcrops.api.core.mechanic.crop.CropStageConfig;
 import net.momirealms.customcrops.api.core.world.CustomCropsBlockState;
@@ -112,21 +113,32 @@ public class BukkitCustomCropsAPI implements CustomCropsAPI {
         if (cropConfig == null) {
             return false;
         }
+
         Optional<CustomCropsWorld<?>> optionalWorld = plugin.getWorldManager().getWorld(location.getWorld());
         if (optionalWorld.isEmpty()) {
             return false;
         }
+
         CustomCropsWorld<?> world = optionalWorld.get();
-        CropBlock cropBlock = (CropBlock) BuiltInBlockMechanics.CROP.mechanic();
+
+        Pos3 pos3 = Pos3.from(location);
         CustomCropsBlockState state = BuiltInBlockMechanics.CROP.createBlockState();
+        CropBlock cropBlock = (CropBlock) state.type();
+
         cropBlock.id(state, id);
         cropBlock.point(state, point);
+
         CropStageConfig stageConfigWithModel = cropConfig.stageWithModelByPoint(cropBlock.point(state));
-        world.removeBlockState(Pos3.from(location));
-        world.addBlockState(Pos3.from(location), state);
+
         plugin.getScheduler().sync().run(() -> {
             plugin.getItemManager().remove(location, ExistenceForm.ANY);
             plugin.getItemManager().place(location, stageConfigWithModel.existenceForm(), requireNonNull(stageConfigWithModel.stageID()), cropConfig.rotation() ? FurnitureRotation.random() : FurnitureRotation.NONE);
+
+            world.addBlockState(pos3, state).ifPresent(previous -> {
+                BukkitCustomCropsPlugin.getInstance().debug(() -> "Overwrite old data with " + state +
+                    " at location[" + world.worldName() + "," + pos3 + "] which used to be " + previous
+                );
+            });
         }, location);
         return true;
     }
