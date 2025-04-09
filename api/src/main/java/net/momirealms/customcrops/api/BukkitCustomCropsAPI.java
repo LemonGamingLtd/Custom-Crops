@@ -122,6 +122,7 @@ public class BukkitCustomCropsAPI implements CustomCropsAPI {
         cropBlock.id(state, id);
         cropBlock.point(state, point);
         CropStageConfig stageConfigWithModel = cropConfig.stageWithModelByPoint(cropBlock.point(state));
+        world.removeBlockState(Pos3.from(location));
         world.addBlockState(Pos3.from(location), state);
         plugin.getScheduler().sync().run(() -> {
             plugin.getItemManager().remove(location, ExistenceForm.ANY);
