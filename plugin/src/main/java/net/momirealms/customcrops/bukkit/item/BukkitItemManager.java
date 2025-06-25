@@ -37,6 +37,7 @@ import net.momirealms.customcrops.api.integration.ItemProvider;
 import net.momirealms.customcrops.api.util.EventUtils;
 import net.momirealms.customcrops.api.util.LocationUtils;
 import net.momirealms.customcrops.api.util.PluginUtils;
+import net.momirealms.customcrops.common.helper.VersionHelper;
 import net.momirealms.customcrops.common.item.Item;
 import org.bukkit.Registry;
 import org.bukkit.*;
@@ -63,7 +64,6 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 public class BukkitItemManager extends AbstractItemManager {
-
     private final BukkitCustomCropsPlugin plugin;
     private CustomItemProvider provider;
     private AbstractCustomEventListener eventListener;
@@ -194,7 +194,7 @@ public class BukkitItemManager extends AbstractItemManager {
                 if (Integer.parseInt(split[1]) > 0) {
                     above408 = true;
                 } else {
-                    if (Integer.parseInt(String.valueOf(split[2].charAt(0))) >= 8) {
+                    if (VersionHelper.getVersion(split[2]) >= 8) {
                         above408 = true;
                     }
                 }
