@@ -437,4 +437,18 @@ public abstract class AbstractCustomEventListener implements Listener {
         Block block = event.getBlock();
         itemManager.handlePhysicsBreak(block.getLocation(), block.getBlockData().getAsString(), event);
     }
+
+//    @EventHandler(ignoreCancelled = true)
+//    public void onBlockBreak(BlockBreakBlockEvent event) {
+//        Block block = event.getBlock();
+//        itemManager.handlePhysicsBreak(block.getLocation(), block.getBlockData().getAsString(), new Cancellable() {
+//            @Override
+//            public boolean isCancelled() {
+//                return false;
+//            }
+//            @Override
+//            public void setCancelled(boolean b) {
+//            }
+//        });
+//    }
 }
