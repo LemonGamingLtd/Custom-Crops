@@ -451,7 +451,7 @@ public class CropBlock extends AbstractCustomCropsBlock {
                     world.removeBlockState(location);
                     return;
                 }
-                world.scheduler().async().execute(task);
+                plugin.getScheduler().sync().run(task, bukkitLocation);
             }, bukkitLocation);
         } else {
             task.run();
