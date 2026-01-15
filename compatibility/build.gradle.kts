@@ -1,6 +1,5 @@
 repositories {
     mavenCentral()
-    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://maven.enginehub.org/repo/") // worldguard worldedit
     maven("https://jitpack.io/")
     maven("https://repo.papermc.io/repository/maven-public/") // paper
@@ -10,7 +9,6 @@ repositories {
     maven("https://r.irepo.space/maven/") // neigeitems
     maven("https://repo.oraxen.com/releases/") // oraxen
     maven("https://repo.auxilor.io/repository/maven-public/") // eco
-    maven("https://nexus.betonquest.org/repository/betonquest/") // betonquest
     maven("https://repo.dmulloy2.net/repository/public/") // betonquest needs packet wrapper?
     maven("https://oss.sonatype.org/content/repositories/snapshots")
     maven("https://repo.rapture.pw/repository/maven-releases/") // flow nbt
@@ -46,7 +44,6 @@ dependencies {
     compileOnly(files("libs/BattlePass-4.0.6-api.jar"))
     compileOnly(files("libs/ClueScrolls-4.8.7-api.jar"))
     compileOnly("com.comphenix.packetwrapper:PacketWrapper:1.20-2.2.1")
-    compileOnly("org.betonquest:betonquest:2.2.1")
     // item
     compileOnly(files("libs/zaphkiel-2.0.24.jar"))
     compileOnly(files("libs/ExecutableItems-7.24.9.29.jar"))
@@ -67,15 +64,15 @@ dependencies {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
-    options.release.set(17)
+    options.release.set(21)
     dependsOn(tasks.clean)
 }
