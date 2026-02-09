@@ -81,10 +81,6 @@ public class BukkitIntegrationManager implements IntegrationManager {
             BattlePassQuest battlePassQuest = new BattlePassQuest();
             battlePassQuest.register();
         }
-        if (isHooked("ClueScrolls")) {
-            ClueScrollsQuest clueScrollsQuest = new ClueScrollsQuest();
-            clueScrollsQuest.register();
-        }
         if (isHooked("WorldGuard", "7")) {
             WorldGuardRegion.register();
         }
@@ -96,6 +92,10 @@ public class BukkitIntegrationManager implements IntegrationManager {
 
     @Override
     public void delayedLoad() {
+        if (isHooked("ClueScrolls")) {
+            ClueScrollsQuest clueScrollsQuest = new ClueScrollsQuest();
+            clueScrollsQuest.register();
+        }
         if (isHooked("CustomFishing", "2.2", "2.3", "2.4")) {
             registerItemProvider(new CustomFishingItemProvider());
         }
@@ -115,7 +115,10 @@ public class BukkitIntegrationManager implements IntegrationManager {
             registerLevelerProvider(new McMMOLevelerProvider());
         }
         if (isHooked("AureliumSkills")) {
-            registerLevelerProvider(new AureliumSkillsProvider());
+            registerLevelerProvider(new AureliumSkillsLevelerProvider());
+        }
+        if (isHooked("ValhallaMMO")) {
+            registerLevelerProvider(new ValhallaMMOLevelerProvider());
         }
         if (isHooked("AuraSkills")) {
             registerLevelerProvider(new AuraSkillsLevelerProvider());
