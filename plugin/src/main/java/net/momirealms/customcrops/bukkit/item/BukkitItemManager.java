@@ -232,6 +232,19 @@ public class BukkitItemManager extends AbstractItemManager {
             this.setCustomEventListener((AbstractCustomEventListener) crucibleListenerConstructor.newInstance(this, this.provider));
 
             plugin.getPluginLogger().info("MythicCrucible hooked!");
+        } else if (PluginUtils.isEnabled("LGFurniture")) {
+            String rVersion = "r1";
+            Class<?> furnitureProviderClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.lgfurniture_" + rVersion + ".FurnitureProvider");
+            Constructor<?> nexoProviderConstructor = furnitureProviderClass.getDeclaredConstructor();
+            nexoProviderConstructor.setAccessible(true);
+            this.provider = (CustomItemProvider) nexoProviderConstructor.newInstance();
+
+            Class<?> nexoListenerClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.lgfurniture_" + rVersion + ".FurnitureListener");
+            Constructor<?> furnitureListenerConstructor = nexoListenerClass.getDeclaredConstructor(AbstractItemManager.class);
+            furnitureListenerConstructor.setAccessible(true);
+            this.setCustomEventListener((AbstractCustomEventListener) furnitureListenerConstructor.newInstance(this));
+
+            plugin.getPluginLogger().info("LGFurniture hooked!");
         }
     }
 

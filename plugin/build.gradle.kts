@@ -41,6 +41,7 @@ dependencies {
 
 tasks {
     shadowJar {
+        from(zipTree(project(":compatibility-lgfurniture-r1").tasks.jar.get().archiveFile))
         from(zipTree(project(":compatibility-nexo-r1").tasks.jar.get().archiveFile))
         from(zipTree(project(":compatibility-oraxen-r1").tasks.jar.get().archiveFile))
         from(zipTree(project(":compatibility-oraxen-r2").tasks.jar.get().archiveFile))
