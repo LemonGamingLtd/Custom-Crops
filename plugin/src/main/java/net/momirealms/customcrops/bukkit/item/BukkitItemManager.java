@@ -235,12 +235,12 @@ public class BukkitItemManager extends AbstractItemManager {
         } else if (PluginUtils.isEnabled("LGFurniture")) {
             String rVersion = "r1";
             Class<?> furnitureProviderClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.lgfurniture_" + rVersion + ".FurnitureProvider");
-            Constructor<?> nexoProviderConstructor = furnitureProviderClass.getDeclaredConstructor();
-            nexoProviderConstructor.setAccessible(true);
-            this.provider = (CustomItemProvider) nexoProviderConstructor.newInstance();
+            Constructor<?> furnitureProviderConstructor = furnitureProviderClass.getDeclaredConstructor();
+            furnitureProviderConstructor.setAccessible(true);
+            this.provider = (CustomItemProvider) furnitureProviderConstructor.newInstance();
 
-            Class<?> nexoListenerClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.lgfurniture_" + rVersion + ".FurnitureListener");
-            Constructor<?> furnitureListenerConstructor = nexoListenerClass.getDeclaredConstructor(AbstractItemManager.class);
+            Class<?> furnitureListenerClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.lgfurniture_" + rVersion + ".FurnitureListener");
+            Constructor<?> furnitureListenerConstructor = furnitureListenerClass.getDeclaredConstructor(AbstractItemManager.class);
             furnitureListenerConstructor.setAccessible(true);
             this.setCustomEventListener((AbstractCustomEventListener) furnitureListenerConstructor.newInstance(this));
 
