@@ -42,8 +42,24 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.*;
-import org.bukkit.event.block.*;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockFadeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.MoistureChangeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
@@ -54,7 +70,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Constructor;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractCustomEventListener implements Listener {
     private final HashSet<EntityType> entities = new HashSet<>();
@@ -252,6 +272,15 @@ public abstract class AbstractCustomEventListener implements Listener {
                 }
                 this.itemManager.handlePhysicsBreak(block.getLocation(), block.getBlockData().getAsString(), event);
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockFromToEvent(BlockFromToEvent event) {
+        Block block = event.getToBlock();
+        Optional<CustomCropsWorld<?>> optionalWorld = BukkitCustomCropsPlugin.getInstance().getWorldManager().getWorld(block.getWorld());
+        if (optionalWorld.isPresent()) {
+            this.itemManager.handlePhysicsBreak(block.getLocation(), this.itemManager.blockID(block), event);
         }
     }
 
