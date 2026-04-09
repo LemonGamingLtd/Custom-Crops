@@ -315,12 +315,12 @@ public class CropBlock extends AbstractCustomCropsBlock {
         List<CropConfig> configList = Registries.STAGE_TO_CROP_UNSAFE.get(stageID);
         if (configList == null) return null;
 
-        Optional<CustomCropsBlockState> optionalPotState = world.getBlockState(pos3);
-        if (optionalPotState.isPresent()) {
-            CustomCropsBlockState potState = optionalPotState.get();
-            if (potState.type() instanceof CropBlock cropBlock) {
-                if (configList.stream().map(CropConfig::id).toList().contains(cropBlock.id(potState))) {
-                    return potState;
+        Optional<CustomCropsBlockState> optionalCropState = world.getBlockState(pos3);
+        if (optionalCropState.isPresent()) {
+            CustomCropsBlockState cropState = optionalCropState.get();
+            if (cropState.type() instanceof CropBlock cropBlock) {
+                if (configList.stream().map(CropConfig::id).toList().contains(cropBlock.id(cropState))) {
+                    return cropState;
                 }
             }
         }

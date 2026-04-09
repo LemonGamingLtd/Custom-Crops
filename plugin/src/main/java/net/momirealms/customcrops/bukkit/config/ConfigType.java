@@ -79,6 +79,7 @@ public class ConfigType {
                                 section.getString("water-bar.full", ""),
                                 section.getString("water-bar.right", "")
                         ) : null)
+                        .ignoreFullWaterPot(section.getBoolean("ignore-full-water-pot", false))
                         .build();
                 manager.registerWateringCanConfig(config);
                 return false;

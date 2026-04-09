@@ -35,6 +35,7 @@ public class WateringCanConfigImpl implements WateringCanConfig {
     private final int storage;
     private final int wateringAmount;
     private final boolean dynamicLore;
+    private final boolean ignoreFullWaterPot;
     private final Set<String> whitelistPots;
     private final Set<String> whitelistSprinklers;
     private final List<TextValue<Player>> lore;
@@ -58,6 +59,7 @@ public class WateringCanConfigImpl implements WateringCanConfig {
             int storage,
             int wateringAmount,
             boolean dynamicLore,
+            boolean ignoreFullWaterPot,
             Set<String> whitelistPots,
             Set<String> whitelistSprinklers,
             List<TextValue<Player>> lore,
@@ -80,6 +82,7 @@ public class WateringCanConfigImpl implements WateringCanConfig {
         this.storage = storage;
         this.wateringAmount = wateringAmount;
         this.dynamicLore = dynamicLore;
+        this.ignoreFullWaterPot = ignoreFullWaterPot;
         this.whitelistPots = whitelistPots;
         this.whitelistSprinklers = whitelistSprinklers;
         this.lore = lore;
@@ -139,6 +142,11 @@ public class WateringCanConfigImpl implements WateringCanConfig {
     @Override
     public Set<String> whitelistSprinklers() {
         return whitelistSprinklers;
+    }
+
+    @Override
+    public boolean ignoreFullWaterPot() {
+        return this.ignoreFullWaterPot;
     }
 
     @Override
@@ -202,7 +210,6 @@ public class WateringCanConfigImpl implements WateringCanConfig {
     }
 
     static class BuilderImpl implements Builder {
-
         private String id;
         private String itemID;
         private int width;
@@ -210,6 +217,7 @@ public class WateringCanConfigImpl implements WateringCanConfig {
         private int storage;
         private int wateringAmount;
         private boolean dynamicLore;
+        private boolean ignoreFullWaterPot;
         private Set<String> whitelistPots;
         private Set<String> whitelistSprinklers;
         private List<TextValue<Player>> lore;
@@ -227,7 +235,7 @@ public class WateringCanConfigImpl implements WateringCanConfig {
 
         @Override
         public WateringCanConfig build() {
-            return new WateringCanConfigImpl(id, itemID, width, length, storage, wateringAmount, dynamicLore, whitelistPots, whitelistSprinklers, lore, waterBar, requirements, infinite, appearances, fullActions, addWaterActions, consumeWaterActions, runOutOfWaterActions, wrongPotActions, wrongSprinklerActions, fillMethods);
+            return new WateringCanConfigImpl(id, itemID, width, length, storage, wateringAmount, dynamicLore, ignoreFullWaterPot, whitelistPots, whitelistSprinklers, lore, waterBar, requirements, infinite, appearances, fullActions, addWaterActions, consumeWaterActions, runOutOfWaterActions, wrongPotActions, wrongSprinklerActions, fillMethods);
         }
 
         @Override
@@ -293,6 +301,12 @@ public class WateringCanConfigImpl implements WateringCanConfig {
         @Override
         public Builder waterBar(WaterBar waterBar) {
             this.waterBar = waterBar;
+            return this;
+        }
+
+        @Override
+        public Builder ignoreFullWaterPot(boolean ignore) {
+            this.ignoreFullWaterPot = ignore;
             return this;
         }
 

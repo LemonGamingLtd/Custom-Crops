@@ -118,6 +118,13 @@ public interface WateringCanConfig {
     Requirement<Player>[] requirements();
 
     /**
+     * Gets if the watering can should ignore pots with full water
+     *
+     * @return true if the watering can ignores full water pot
+     */
+    boolean ignoreFullWaterPot();
+
+    /**
      * Checks if the watering can has infinite water capacity.
      *
      * @return true if the watering can is infinite, false otherwise.
@@ -288,6 +295,14 @@ public interface WateringCanConfig {
          * @return The current instance of the Builder.
          */
         Builder waterBar(WaterBar waterBar);
+
+        /**
+         * Sets whether pots with full water should be ignored
+         *
+         * @param ignore ignore or not
+         * @return The current instance of the Builder.
+         */
+        Builder ignoreFullWaterPot(boolean ignore);
 
         /**
          * Sets the requirements that must be met to use the watering can.

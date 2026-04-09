@@ -308,6 +308,14 @@ public class WateringCanItem extends AbstractCustomCropsItem {
                 ActionManager.trigger(context, wateringCanConfig.runOutOfWaterActions());
                 return InteractionResult.COMPLETE;
             }
+            // water is already full
+            PotBlock potBlock = (PotBlock) BuiltInBlockMechanics.POT.mechanic();
+            if (!wateringCanConfig.ignoreFullWaterPot()) {
+                CustomCropsBlockState clickedPotState = potBlock.fixOrGetState(world, new Pos3(targetLocation.getBlockX(), targetLocation.getBlockY(), targetLocation.getBlockZ()), potConfig, targetBlockID);
+                if (potBlock.water(clickedPotState) >= potConfig.storage()) {
+                    return InteractionResult.COMPLETE;
+                }
+            }
 
             World bukkitWorld = targetLocation.getWorld();
             ArrayList<Pair<Pos3, String>> pots = potInRange(bukkitWorld, Pos3.from(targetLocation), wateringCanConfig.width(), wateringCanConfig.length(), player.getLocation().getYaw(), potConfig);
@@ -321,7 +329,7 @@ public class WateringCanItem extends AbstractCustomCropsItem {
             context.arg(ContextKeys.STORAGE, wateringCanConfig.storage());
             context.arg(ContextKeys.CURRENT_WATER, waterInCan - 1);
 
-            PotBlock potBlock = (PotBlock) BuiltInBlockMechanics.POT.mechanic();
+
             for (Pair<Pos3, String> pair : waterPotEvent.pots()) {
                 CustomCropsBlockState potState = potBlock.fixOrGetState(world,pair.left(), potConfig, pair.right());
                 Location temp = pair.left().toLocation(bukkitWorld);

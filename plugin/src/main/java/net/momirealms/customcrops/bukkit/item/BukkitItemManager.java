@@ -390,7 +390,11 @@ public class BukkitItemManager extends AbstractItemManager {
     public String id(@Nullable ItemStack itemStack) {
         if (itemStack == null || itemStack.getType() == Material.AIR) return "AIR";
         String id = provider.itemID(itemStack);
-        if (id != null) return id;
+        if (id != null) {
+            String finalId = id;
+            plugin.debug(() -> "Id of the item is " + finalId);
+            return id;
+        }
         plugin.debug(() -> "Start checking ID from external plugins");
         for (ItemProvider p : itemDetectArray) {
             plugin.debug(p::identifier);
