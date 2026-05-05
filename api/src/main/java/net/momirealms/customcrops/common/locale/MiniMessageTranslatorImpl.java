@@ -23,7 +23,6 @@ import net.kyori.adventure.text.TranslatableComponent;
 import net.kyori.adventure.text.renderer.TranslatableComponentRenderer;
 import net.kyori.adventure.translation.Translator;
 import net.kyori.adventure.util.TriState;
-import net.kyori.examination.ExaminableProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,10 +82,5 @@ public class MiniMessageTranslatorImpl implements MiniMessageTranslator {
     @Override
     public boolean removeSource(final @NotNull Translator source) {
         return this.sources.remove(source);
-    }
-
-    @Override
-    public @NotNull Stream<? extends ExaminableProperty> examinableProperties() {
-        return Stream.of(ExaminableProperty.of("sources", this.sources));
     }
 }

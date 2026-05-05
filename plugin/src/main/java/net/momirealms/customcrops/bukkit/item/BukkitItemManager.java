@@ -144,7 +144,12 @@ public class BukkitItemManager extends AbstractItemManager {
 
     private void hookDefaultPlugins() throws ReflectiveOperationException {
         if (PluginUtils.hasPlugin("CraftEngine")) {
-            String rVersion = "r1";
+            String rVersion;
+            if (PluginUtils.getPluginVersion("CraftEngine").startsWith("0.0.")) {
+                rVersion = "r1";
+            } else {
+                rVersion = "r2";
+            }
             Class<?> craftEngineProviderClass = Class.forName("net.momirealms.customcrops.bukkit.integration.custom.craftengine_" + rVersion + ".CraftEngineProvider");
             Constructor<?> craftEngineProviderConstructor = craftEngineProviderClass.getDeclaredConstructor();
             craftEngineProviderConstructor.setAccessible(true);

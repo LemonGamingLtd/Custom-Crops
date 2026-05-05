@@ -29,9 +29,11 @@ import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.momirealms.customcrops.api.BukkitCustomCropsPlugin;
+import net.momirealms.customcrops.common.helper.AdventureHelper;
 import net.momirealms.customcrops.common.sender.Sender;
 import net.momirealms.customcrops.common.sender.SenderFactory;
 import net.momirealms.customcrops.common.util.Tristate;
+import net.momirealms.sparrow.heart.SparrowHeart;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.RemoteConsoleCommandSender;
@@ -71,7 +73,9 @@ public class BukkitSenderFactory extends SenderFactory<BukkitCustomCropsPlugin, 
     @Override
     protected void sendMessage(CommandSender sender, Component message) {
         // we can safely send async for players and the console - otherwise, send it sync
-        if (sender instanceof Player || sender instanceof ConsoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
+        if (sender instanceof Player player) {
+            SparrowHeart.getInstance().sendMessage(player, AdventureHelper.componentToJson(message));
+        } else if (sender instanceof ConsoleCommandSender consoleCommandSender || sender instanceof RemoteConsoleCommandSender) {
             getAudience(sender).sendMessage(message);
         } else {
             getPlugin().getScheduler().executeSync(() -> getAudience(sender).sendMessage(message));

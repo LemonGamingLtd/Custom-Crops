@@ -83,9 +83,7 @@ worlds:
         max-per-chunk: -1
     # Override default settings for specific worlds here
     _WORLDS_:
-      world_nether:
-        enable: false
-      world_the_end:
+      world_spawn:
         enable: false
 # Mechanics settings
 mechanics:
