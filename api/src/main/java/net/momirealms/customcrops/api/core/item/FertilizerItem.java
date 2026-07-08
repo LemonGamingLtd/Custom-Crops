@@ -133,6 +133,7 @@ public class FertilizerItem extends AbstractCustomCropsItem {
             if (player.getGameMode() != GameMode.CREATIVE) {
                 itemInHand.setAmount(itemInHand.getAmount() - 1);
             }
+            player.swingHand(event.hand());
             ActionManager.trigger(context, fertilizerConfig.useActions());
             return InteractionResult.COMPLETE;
         }

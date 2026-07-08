@@ -17,6 +17,7 @@
 
 package net.momirealms.customcrops.api.util;
 
+import org.bukkit.Color;
 import org.bukkit.Particle;
 
 public class ParticleUtils {
@@ -30,6 +31,37 @@ public class ParticleUtils {
                 case "VILLAGER_HAPPY" -> Particle.valueOf("HAPPY_VILLAGER");
                 default -> Particle.valueOf(particle);
             };
+        }
+    }
+
+    /**
+     * Parses a colour from a config value. Supports {@code "r,g,b"}, hex ({@code "#rrggbb"}) and a raw integer.
+     * Returns {@link Color#WHITE} for {@code null}/blank or unparseable input so that particle spawning never
+     * fails with a {@link NullPointerException}.
+     *
+     * @param input the colour string to parse
+     * @return the parsed colour
+     */
+    public static Color parseColor(String input) {
+        if (input == null || input.isBlank()) {
+            return Color.WHITE;
+        }
+        input = input.trim();
+        try {
+            if (input.startsWith("#")) {
+                return Color.fromRGB(Integer.parseInt(input.substring(1), 16));
+            }
+            String[] parts = input.split(",");
+            if (parts.length == 3) {
+                return Color.fromRGB(
+                        Integer.parseInt(parts[0].trim()),
+                        Integer.parseInt(parts[1].trim()),
+                        Integer.parseInt(parts[2].trim())
+                );
+            }
+            return Color.fromRGB(Integer.parseInt(input));
+        } catch (NumberFormatException e) {
+            return Color.WHITE;
         }
     }
 }

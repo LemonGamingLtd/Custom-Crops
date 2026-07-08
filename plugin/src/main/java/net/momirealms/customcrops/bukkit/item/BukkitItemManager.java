@@ -454,6 +454,7 @@ public class BukkitItemManager extends AbstractItemManager {
         wrapped.load();
     }
 
+    @SuppressWarnings("removal")
     @Override
     public void increaseDamage(Player player, ItemStack itemStack, int amount) {
         if (itemStack == null || itemStack.getType() == Material.AIR || itemStack.getAmount() == 0)
