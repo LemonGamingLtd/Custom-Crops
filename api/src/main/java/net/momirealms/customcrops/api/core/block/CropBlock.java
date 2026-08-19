@@ -41,6 +41,7 @@ import net.momirealms.customcrops.api.requirement.RequirementManager;
 import net.momirealms.customcrops.api.util.EventUtils;
 import net.momirealms.customcrops.api.util.LocationUtils;
 import net.momirealms.customcrops.api.util.PlayerUtils;
+import net.momirealms.customcrops.common.helper.VersionHelper;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -451,10 +452,18 @@ public class CropBlock extends AbstractCustomCropsBlock {
                     world.removeBlockState(location);
                     return;
                 }
-                plugin.getScheduler().sync().run(task, bukkitLocation);
+                if (VersionHelper.isFolia()) {
+                    task.run();
+                } else {
+                    world.scheduler().async().execute(task);
+                }
             }, bukkitLocation);
         } else {
-            task.run();
+            if (VersionHelper.isFolia()) {
+                plugin.getScheduler().sync().run(task, bukkitLocation);
+            } else {
+                task.run();
+            }
         }
     }
 
