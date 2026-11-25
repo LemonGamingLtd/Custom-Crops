@@ -275,7 +275,8 @@ public abstract class AbstractCustomEventListener implements Listener {
         }
     }
 
-    @EventHandler
+    // a flow that claim protection cancelled must not break (and pay out) the crop: the block stays and pays again on the next flow
+    @EventHandler(ignoreCancelled = true)
     public void onBlockFromToEvent(BlockFromToEvent event) {
         Block block = event.getToBlock();
         Optional<CustomCropsWorld<?>> optionalWorld = BukkitCustomCropsPlugin.getInstance().getWorldManager().getWorld(block.getWorld());
